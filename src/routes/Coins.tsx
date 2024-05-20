@@ -1,5 +1,7 @@
 import { useQuery } from 'react-query';
 import { fetchCoins } from '../api';
+import styled from 'styled-components';
+import Header from '../Components/Header';
 
 interface ICoin {
   id: string;
@@ -30,12 +32,21 @@ interface ICoin {
   last_updated: string;
 }
 
+const Container = styled.div`
+  margin: 0 auto;
+`;
+
 function Coins() {
   const { isLoading, data } = useQuery<ICoin[]>('coinIds', fetchCoins);
   if (isLoading) {
     console.log(data);
   }
-  return <></>;
+  return (
+    <>
+      <Header />
+      <Container></Container>
+    </>
+  );
 }
 
 export default Coins;
