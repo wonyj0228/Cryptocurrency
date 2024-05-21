@@ -2,6 +2,9 @@ import { useQuery } from 'react-query';
 import { fetchCoins } from '../api';
 import styled from 'styled-components';
 import Header from '../Components/Header';
+import coverImage from '../Img/coverImg.png';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCoins } from '@fortawesome/free-solid-svg-icons';
 
 interface ICoin {
   id: string;
@@ -36,15 +39,191 @@ const Container = styled.div`
   margin: 0 auto;
 `;
 
+const Cover = styled.div`
+  width: 100%;
+  height: 25vh;
+  background-color: ${(props) => props.theme.accentColor};
+  display: flex;
+  justify-content: center;
+`;
+
+const CoverText = styled.div`
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: rgb(244, 244, 244);
+
+  div {
+    font-size: calc(14px + 2vw);
+    font-weight: bold;
+    margin-bottom: calc(10px + 1vh);
+  }
+
+  span {
+    font-size: calc(10px + 0.2vw);
+  }
+`;
+
+const CoverImg = styled.div`
+  width: 20%;
+  background-image: url(${coverImage});
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  filter: opacity(0.5) grayscale(1);
+`;
+
+const CoinList = styled.div`
+  width: 60%;
+  margin: 0 auto;
+`;
+
+const Title = styled.div`
+  height: 10vh;
+  display: flex;
+  align-items: center;
+  font-size: calc(14px + 1vw);
+  font-weight: bold;
+  color: ${(props) => props.theme.textColor};
+
+  svg {
+    color: #fbc522;
+    margin-right: 10px;
+  }
+`;
+
+const List = styled.div`
+  border: 1px solid rgb(80, 80, 80, 0.5);
+  border-radius: 5px;
+
+  table {
+    width: 100%;
+    thead {
+      color: ${(props) => props.theme.tableHeadColor};
+      font-weight: bold;
+      font-size: 0.9rem;
+      height: 50px;
+      border-bottom: 1px solid rgb(80, 80, 80, 0.5);
+      th {
+        padding: 20px 0;
+      }
+    }
+    tbody {
+      tr {
+        border-bottom: 0.7px solid rgba(80, 80, 80, 0.1);
+        transition: background-color 0.3s ease;
+        cursor: pointer;
+        &:hover {
+          background-color: rgba(80, 80, 80, 0.1);
+        }
+      }
+      td:nth-child(2),
+      td:nth-child(3),
+      td:nth-child(4) {
+        text-align: end;
+        vertical-align: middle;
+        padding: 10px 10px;
+      }
+    }
+  }
+`;
+
+const Coin = styled.div`
+  display: flex;
+  padding: 10px 10px;
+  img {
+    width: calc(1.5rem + 1vw);
+    height: calc(1.5rem + 1vw);
+    margin-right: 10px;
+  }
+`;
+
+const CoinInfo = styled.div`
+  div:first-child {
+    text-transform: uppercase;
+    font-size: 1.2rem;
+    color: ${(props) => props.theme.textColor};
+    font-weight: bold;
+  }
+  div:nth-child(2) {
+    color: ${(props) => props.theme.tableHeadColor};
+  }
+`;
+
+const PriceChange = styled.td<{ $isPositive: boolean }>`
+  color: ${(props) =>
+    props.$isPositive ? props.theme.redColor : props.theme.blueColor};
+`;
+
+////////////////////////////////////////////////////////////////////////////////////////////////
 function Coins() {
   const { isLoading, data } = useQuery<ICoin[]>('coinIds', fetchCoins);
-  if (isLoading) {
-    console.log(data);
-  }
+
   return (
     <>
       <Header />
-      <Container></Container>
+      <Container>
+        <Cover>
+          <CoverText>
+            <div>CRYPTOCURRENCY</div>
+            <span>코인 정보, 실시간 시세 간편하게 확인하세요.</span>
+          </CoverText>
+          <CoverImg />
+        </Cover>
+
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : (
+          <CoinList>
+            <Title>
+              <FontAwesomeIcon icon={faCoins} />
+              <span>코인 리스트</span>
+            </Title>
+            <List>
+              <table>
+                <thead>
+                  <tr>
+                    <th>코인명</th>
+                    <th>현재가</th>
+                    <th>등락가</th>
+                    <th>등락률</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data?.map((coin) => {
+                    return (
+                      <tr key={coin.id}>
+                        <td>
+                          <Coin>
+                            <img src={coin.image} />
+                            <CoinInfo>
+                              <div>{coin.symbol}</div>
+                              <div>{coin.name}</div>
+                            </CoinInfo>
+                          </Coin>
+                        </td>
+                        <td>$ {coin.current_price.toLocaleString()}</td>
+                        <PriceChange $isPositive={coin.price_change_24h > 0}>
+                          ${' '}
+                          {Number(coin.price_change_24h)
+                            .toFixed(3)
+                            .toLocaleString()}
+                        </PriceChange>
+                        <PriceChange
+                          $isPositive={coin.price_change_percentage_24h > 0}
+                        >
+                          {Number(coin.price_change_percentage_24h).toFixed(2)}{' '}
+                          %
+                        </PriceChange>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </List>
+          </CoinList>
+        )}
+      </Container>
     </>
   );
 }

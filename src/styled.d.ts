@@ -11,5 +11,6 @@ declare module 'styled-components' {
 
     themeSunColor: string;
     themeMoonColor: string;
+    tableHeadColor: string;
   }
 }

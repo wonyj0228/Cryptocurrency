@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 const Container = styled.div`
   width: 100%;
-  padding: 15px 20px;
+  padding: 25px 30px;
 
   display: flex;
   justify-content: space-between;
@@ -15,8 +15,9 @@ const Container = styled.div`
 
 const Home = styled.span`
   font-weight: bold;
-  font-size: 40px;
+  font-size: 1.5rem;
   color: ${(props) => props.theme.accentColor};
+  cursor: pointer;
 `;
 
 const MoveBar = styled.div`
