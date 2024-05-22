@@ -99,7 +99,7 @@ const List = styled.div`
   width: 60%;
   table {
     width: 100%;
-    border: 1px solid rgb(80, 80, 80, 0.5);
+    border: ${(props) => props.theme.borderColor};
     border-radius: 5px;
 
     thead {
@@ -107,7 +107,7 @@ const List = styled.div`
       font-weight: bold;
       font-size: 15px;
       height: 50px;
-      border-bottom: 1px solid rgb(80, 80, 80, 0.5);
+      border-bottom: ${(props) => props.theme.borderColor};
       th {
         padding: 20px 0;
       }
@@ -203,10 +203,7 @@ function Coins() {
                 <tbody>
                   {data?.map((coin) => {
                     return (
-                      <tr
-                        key={coin.id}
-                        onClick={() => navigate(`/${coin.id}`, { state: coin })}
-                      >
+                      <tr key={coin.id} onClick={() => navigate(`/${coin.id}`)}>
                         <td>
                           <Coin>
                             <img src={coin.image} alt="coinImg" />
