@@ -1,4 +1,4 @@
-const BAST_URL = `https://api.coingecko.com/api/v3`;
+const BASE_URL = `https://api.coingecko.com/api/v3`;
 const API_KEY = process.env.REACT_APP_COIN;
 
 const options = {
@@ -9,7 +9,16 @@ const options = {
   },
 };
 export function fetchCoins() {
-  return fetch(`${BAST_URL}/coins/markets?vs_currency=usd`, options)
+  return fetch(`${BASE_URL}/coins/markets?vs_currency=usd`, options)
     .then((response) => response.json())
     .then((json) => json.slice(0, 50));
+}
+
+export function fetchCoinData(coinId: string) {
+  return fetch(
+    `${BASE_URL}/coins/markets?vs_currency=usd&ids=${coinId}`,
+    options
+  )
+    .then((response) => response.json())
+    .then((json) => json[0]);
 }

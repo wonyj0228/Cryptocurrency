@@ -6,13 +6,17 @@ import reset from 'styled-reset';
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
+
   *{
     box-sizing: border-box;
   }
-  
   body{
     font-family: 'Noto Sans',"Noto Sans KR", sans-serif;
     font-size: 16px;
+  }
+  a{
+    text-decoration: none;
+    color: inherit;
   }
 `;
 

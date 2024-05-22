@@ -5,6 +5,7 @@ import Header from '../Components/Header';
 import coverImage from '../Img/coverImg.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCoins } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
 
 interface ICoin {
   id: string;
@@ -167,6 +168,7 @@ const PriceChange = styled.td<{ $isPositive: boolean }>`
 ////////////////////////////////////////////////////////////////////////////////////////////////
 function Coins() {
   const { isLoading, data } = useQuery<ICoin[]>('coinIds', fetchCoins);
+  const navigate = useNavigate();
 
   return (
     <>
@@ -201,7 +203,10 @@ function Coins() {
                 <tbody>
                   {data?.map((coin) => {
                     return (
-                      <tr key={coin.id}>
+                      <tr
+                        key={coin.id}
+                        onClick={() => navigate(`/${coin.id}`, { state: coin })}
+                      >
                         <td>
                           <Coin>
                             <img src={coin.image} alt="coinImg" />
