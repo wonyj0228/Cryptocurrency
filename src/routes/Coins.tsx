@@ -74,11 +74,13 @@ const CoverImg = styled.div`
 `;
 
 const CoinList = styled.div`
-  width: 60%;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const Title = styled.div`
+  width: 60%;
   height: 10vh;
   display: flex;
   align-items: center;
@@ -93,15 +95,16 @@ const Title = styled.div`
 `;
 
 const List = styled.div`
-  border: 1px solid rgb(80, 80, 80, 0.5);
-  border-radius: 5px;
-
+  width: 60%;
   table {
     width: 100%;
+    border: 1px solid rgb(80, 80, 80, 0.5);
+    border-radius: 5px;
+
     thead {
       color: ${(props) => props.theme.tableHeadColor};
       font-weight: bold;
-      font-size: 0.9rem;
+      font-size: 15px;
       height: 50px;
       border-bottom: 1px solid rgb(80, 80, 80, 0.5);
       th {
@@ -109,6 +112,7 @@ const List = styled.div`
       }
     }
     tbody {
+      font-size: calc(10px + 0.2vw);
       tr {
         border-bottom: 0.7px solid rgba(80, 80, 80, 0.1);
         transition: background-color 0.3s ease;
@@ -117,12 +121,14 @@ const List = styled.div`
           background-color: rgba(80, 80, 80, 0.1);
         }
       }
+      td {
+        padding: 10px 10px;
+      }
       td:nth-child(2),
       td:nth-child(3),
       td:nth-child(4) {
         text-align: end;
         vertical-align: middle;
-        padding: 10px 10px;
       }
     }
   }
@@ -130,7 +136,6 @@ const List = styled.div`
 
 const Coin = styled.div`
   display: flex;
-  padding: 10px 10px;
   img {
     width: calc(1.5rem + 1vw);
     height: calc(1.5rem + 1vw);
@@ -139,9 +144,13 @@ const Coin = styled.div`
 `;
 
 const CoinInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
   div:first-child {
     text-transform: uppercase;
-    font-size: 1.2rem;
+    font-size: calc(12px + 0.4vw);
     color: ${(props) => props.theme.textColor};
     font-weight: bold;
   }
@@ -195,7 +204,7 @@ function Coins() {
                       <tr key={coin.id}>
                         <td>
                           <Coin>
-                            <img src={coin.image} />
+                            <img src={coin.image} alt="coinImg" />
                             <CoinInfo>
                               <div>{coin.symbol}</div>
                               <div>{coin.name}</div>
