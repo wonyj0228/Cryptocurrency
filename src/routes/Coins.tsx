@@ -97,11 +97,12 @@ const Title = styled.div`
 
 const List = styled.div`
   width: 60%;
+  border: ${(props) => props.theme.borderColor};
+  border-radius: 10px;
+  min-width: 300px;
+
   table {
     width: 100%;
-    border: ${(props) => props.theme.borderColor};
-    border-radius: 5px;
-
     thead {
       color: ${(props) => props.theme.tableHeadColor};
       font-weight: bold;

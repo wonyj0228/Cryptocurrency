@@ -91,11 +91,19 @@ const InfoTitle = styled.span`
 `;
 const InfoContent = styled.span``;
 
+const LoadingContainer = styled.div`
+  height: calc(100vh - 80px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 function Coin() {
   const { coinId } = useParams<{ coinId: string }>();
 
-  const { isLoading : infoLoading, data : infoData } = useQuery<ICoin>(['coinInfo', coinId], () =>
-    fetchCoinData(`${coinId}`)
+  const { isLoading: infoLoading, data: infoData } = useQuery<ICoin>(
+    ['coinInfo', coinId],
+    () => fetchCoinData(`${coinId}`)
   );
   let isPositive = true;
   let priceChgPer = '';
@@ -116,40 +124,50 @@ function Coin() {
   }
 
   return (
-    <><Header />
-    {true ? <BeatLoader/> : (
-      <Container>
-        <MainBox>
-          <CoinName>
-            <img src={infoData?.image} alt="coinImg" />
-            <div>{infoData?.name}</div>
-          </CoinName>
+    <>
+      <Header />
+      {infoLoading ? (
+        <LoadingContainer>
+          <BeatLoader color="#FDDE55" margin={30} size={20} />
+        </LoadingContainer>
+      ) : (
+        <Container>
+          <MainBox>
+            <CoinName>
+              <img src={infoData?.image} alt="coinImg" />
+              <div>{infoData?.name}</div>
+            </CoinName>
 
-          <PriceChange $isPositive={isPositive}>
-            <CurrentPrice>{`$ ${infoData?.current_price.toLocaleString()}`}</CurrentPrice>
-            <PriceChgPer>{priceChgPer}</PriceChgPer>
-          </PriceChange>
+            <PriceChange $isPositive={isPositive}>
+              <CurrentPrice>{`$ ${infoData?.current_price.toLocaleString()}`}</CurrentPrice>
+              <PriceChgPer>{priceChgPer}</PriceChgPer>
+            </PriceChange>
 
-          <PriceInfo>
-            <InfoRow>
-              <InfoTitle>고가</InfoTitle>
-              <InfoContent>{infoData?.high_24h.toLocaleString()}</InfoContent>
-            </InfoRow>
-            <InfoRow>
-              <InfoTitle>저가</InfoTitle>
-              <InfoContent>{infoData?.low_24h.toLocaleString()}</InfoContent>
-            </InfoRow>
-            <InfoRow>
-              <InfoTitle>시가총액</InfoTitle>
-              <InfoContent>{infoData?.market_cap.toLocaleString()}</InfoContent>
-            </InfoRow>
-            <InfoRow>
-              <InfoTitle>거래대금</InfoTitle>
-              <InfoContent>{infoData?.total_volume.toLocaleString()}</InfoContent>
-            </InfoRow>
-          </PriceInfo>
-        </MainBox>
-      </Container>)}
+            <PriceInfo>
+              <InfoRow>
+                <InfoTitle>고가</InfoTitle>
+                <InfoContent>{infoData?.high_24h.toLocaleString()}</InfoContent>
+              </InfoRow>
+              <InfoRow>
+                <InfoTitle>저가</InfoTitle>
+                <InfoContent>{infoData?.low_24h.toLocaleString()}</InfoContent>
+              </InfoRow>
+              <InfoRow>
+                <InfoTitle>시가총액</InfoTitle>
+                <InfoContent>
+                  {infoData?.market_cap.toLocaleString()}
+                </InfoContent>
+              </InfoRow>
+              <InfoRow>
+                <InfoTitle>거래대금</InfoTitle>
+                <InfoContent>
+                  {infoData?.total_volume.toLocaleString()}
+                </InfoContent>
+              </InfoRow>
+            </PriceInfo>
+          </MainBox>
+        </Container>
+      )}
     </>
   );
 }

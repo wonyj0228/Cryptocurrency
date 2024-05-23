@@ -2,6 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
   width: 100%;
@@ -69,13 +70,14 @@ const Toggle = styled.div`
 
 const Header = () => {
   const [isChecked, setIsChecked] = useState(false);
+  const navigate = useNavigate();
 
   const changeTheme = () => {
     setIsChecked((prev) => !prev);
   };
   return (
     <Container>
-      <Home>CRYPTOCURRENCY</Home>
+      <Home onClick={() => navigate('/')}>CRYPTOCURRENCY</Home>
       <Toggle onClick={changeTheme}>
         <ChkBox checked={isChecked} readOnly={true} />
         <MoveBar />
