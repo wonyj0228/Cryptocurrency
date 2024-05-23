@@ -5,38 +5,33 @@ import { useQuery } from 'react-query';
 import { fetchCoinData } from '../api';
 import { BeatLoader } from 'react-spinners';
 
+interface ICurrency {
+  usd: number;
+}
+
+interface IMarket {
+  current_price: ICurrency;
+  market_cap: ICurrency;
+  total_volume: ICurrency;
+  high_24h: ICurrency;
+  low_24h: ICurrency;
+  price_change_24h_in_currency: ICurrency;
+  price_change_percentage_24h: number;
+}
+
 interface ICoin {
   id: string;
-  symbol: string;
   name: string;
-  image: string;
-  current_price: number;
-  market_cap: number;
-  market_cap_rank: number;
-  fully_diluted_valuation: number;
-  total_volume: number;
-  high_24h: number;
-  low_24h: number;
-  price_change_24h: number;
-  price_change_percentage_24h: number;
-  market_cap_change_24h: number;
-  market_cap_change_percentage_24h: number;
-  circulating_supply: number;
-  total_supply: number;
-  max_supply: number;
-  ath: number;
-  ath_change_percentage: number;
-  ath_date: string;
-  atl: number;
-  atl_change_percentage: number;
-  atl_date: string;
-  roi: object;
-  last_updated: string;
+  symbol: string;
+  description: { en: string };
+  image: { small: string };
+  market_data: IMarket;
 }
 
 const Container = styled.div`
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   padding-top: 50px;
 `;
 
@@ -98,6 +93,26 @@ const LoadingContainer = styled.div`
   align-items: center;
 `;
 
+const DescBox = styled.div`
+  padding-top: 50px;
+  width: 60%;
+`;
+
+const DescTitle = styled.span`
+  font-size: 25px;
+  font-weight: bold;
+`;
+
+const DescContent = styled.div`
+  border: ${(props) => props.theme.borderColor};
+  border-radius: 10px;
+  margin-top: 15px;
+  padding: 10px 10px;
+
+  letter-spacing: 1px;
+  line-height: 20px;
+`;
+
 function Coin() {
   const { coinId } = useParams<{ coinId: string }>();
 
@@ -107,17 +122,21 @@ function Coin() {
   );
   let isPositive = true;
   let priceChgPer = '';
-  const tempPer = infoData?.price_change_percentage_24h;
+  const tempPer = infoData?.market_data.price_change_percentage_24h;
 
   if (tempPer) {
     if (tempPer >= 0) {
       isPositive = true;
-      priceChgPer = `${tempPer.toFixed(2)}% (▲ ${infoData?.price_change_24h
+      priceChgPer = `${tempPer.toFixed(
+        2
+      )}% (▲ ${infoData?.market_data.price_change_24h_in_currency.usd
         .toFixed(3)
         .slice(1)})`;
     } else {
       isPositive = false;
-      priceChgPer = `${tempPer.toFixed(2)}% (▼ ${infoData?.price_change_24h
+      priceChgPer = `${tempPer.toFixed(
+        2
+      )}% (▼ ${infoData?.market_data.price_change_24h_in_currency.usd
         .toFixed(3)
         .slice(1)})`;
     }
@@ -134,38 +153,50 @@ function Coin() {
         <Container>
           <MainBox>
             <CoinName>
-              <img src={infoData?.image} alt="coinImg" />
+              <img src={infoData?.image.small} alt="coinImg" />
               <div>{infoData?.name}</div>
             </CoinName>
 
             <PriceChange $isPositive={isPositive}>
-              <CurrentPrice>{`$ ${infoData?.current_price.toLocaleString()}`}</CurrentPrice>
+              <CurrentPrice>{`$ ${infoData?.market_data.current_price.usd.toLocaleString()}`}</CurrentPrice>
               <PriceChgPer>{priceChgPer}</PriceChgPer>
             </PriceChange>
 
             <PriceInfo>
               <InfoRow>
                 <InfoTitle>고가</InfoTitle>
-                <InfoContent>{infoData?.high_24h.toLocaleString()}</InfoContent>
+                <InfoContent>
+                  {infoData?.market_data.high_24h.usd.toLocaleString()}
+                </InfoContent>
               </InfoRow>
               <InfoRow>
                 <InfoTitle>저가</InfoTitle>
-                <InfoContent>{infoData?.low_24h.toLocaleString()}</InfoContent>
+                <InfoContent>
+                  {infoData?.market_data.low_24h.usd.toLocaleString()}
+                </InfoContent>
               </InfoRow>
               <InfoRow>
                 <InfoTitle>시가총액</InfoTitle>
                 <InfoContent>
-                  {infoData?.market_cap.toLocaleString()}
+                  {infoData?.market_data.market_cap.usd.toLocaleString()}
                 </InfoContent>
               </InfoRow>
               <InfoRow>
                 <InfoTitle>거래대금</InfoTitle>
                 <InfoContent>
-                  {infoData?.total_volume.toLocaleString()}
+                  {infoData?.market_data.total_volume.usd.toLocaleString()}
                 </InfoContent>
               </InfoRow>
             </PriceInfo>
           </MainBox>
+          <DescBox>
+            <DescTitle>Description</DescTitle>
+            <DescContent
+              dangerouslySetInnerHTML={{
+                __html: `${infoData?.description.en}`,
+              }}
+            ></DescContent>
+          </DescBox>
         </Container>
       )}
     </>

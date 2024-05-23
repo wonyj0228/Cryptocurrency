@@ -15,15 +15,14 @@ export function fetchCoins() {
 }
 
 export function fetchCoinData(coinId: string) {
-  return fetch(
-    `${BASE_URL}/coins/markets?vs_currency=usd&ids=${coinId}`,
-    options
-  )
-    .then((response) => response.json())
-    .then((json) => json[0]);
+  return fetch(`${BASE_URL}/coins/${coinId}`, options).then((response) =>
+    response.json()
+  );
 }
 
-export function fetchChartData(coinId:string, days:number) {
-  return fetch(`${BASE_URL}/coins/${coinId}/market_chart?vs_currency=usd&days=${days}`, options)
-  .then(response => response.json())
+export function fetchChartData(coinId: string, days: number) {
+  return fetch(
+    `${BASE_URL}/coins/${coinId}/market_chart?vs_currency=usd&days=${days}`,
+    options
+  ).then((response) => response.json());
 }
