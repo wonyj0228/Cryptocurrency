@@ -22,3 +22,8 @@ export function fetchCoinData(coinId: string) {
     .then((response) => response.json())
     .then((json) => json[0]);
 }
+
+export function fetchChartData(coinId:string, days:number) {
+  return fetch(`${BASE_URL}/coins/${coinId}/market_chart?vs_currency=usd&days=${days}`, options)
+  .then(response => response.json())
+}

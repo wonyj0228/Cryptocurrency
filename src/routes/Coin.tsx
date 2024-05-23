@@ -3,6 +3,7 @@ import Header from '../Components/Header';
 import styled from 'styled-components';
 import { useQuery } from 'react-query';
 import { fetchCoinData } from '../api';
+import { BeatLoader } from 'react-spinners';
 
 interface ICoin {
   id: string;
@@ -93,62 +94,62 @@ const InfoContent = styled.span``;
 function Coin() {
   const { coinId } = useParams<{ coinId: string }>();
 
-  const { isLoading, data } = useQuery<ICoin>(['coinInfo', coinId], () =>
+  const { isLoading : infoLoading, data : infoData } = useQuery<ICoin>(['coinInfo', coinId], () =>
     fetchCoinData(`${coinId}`)
   );
   let isPositive = true;
   let priceChgPer = '';
-  const tempPer = data?.price_change_percentage_24h;
+  const tempPer = infoData?.price_change_percentage_24h;
 
   if (tempPer) {
     if (tempPer >= 0) {
       isPositive = true;
-      priceChgPer = `${tempPer.toFixed(2)}% (▲ ${data?.price_change_24h
+      priceChgPer = `${tempPer.toFixed(2)}% (▲ ${infoData?.price_change_24h
         .toFixed(3)
         .slice(1)})`;
     } else {
       isPositive = false;
-      priceChgPer = `${tempPer.toFixed(2)}% (▼ ${data?.price_change_24h
+      priceChgPer = `${tempPer.toFixed(2)}% (▼ ${infoData?.price_change_24h
         .toFixed(3)
         .slice(1)})`;
     }
   }
 
   return (
-    <>
-      <Header />
+    <><Header />
+    {true ? <BeatLoader/> : (
       <Container>
         <MainBox>
           <CoinName>
-            <img src={data?.image} alt="coinImg" />
-            <div>{data?.name}</div>
+            <img src={infoData?.image} alt="coinImg" />
+            <div>{infoData?.name}</div>
           </CoinName>
 
           <PriceChange $isPositive={isPositive}>
-            <CurrentPrice>{`$ ${data?.current_price.toLocaleString()}`}</CurrentPrice>
+            <CurrentPrice>{`$ ${infoData?.current_price.toLocaleString()}`}</CurrentPrice>
             <PriceChgPer>{priceChgPer}</PriceChgPer>
           </PriceChange>
 
           <PriceInfo>
             <InfoRow>
               <InfoTitle>고가</InfoTitle>
-              <InfoContent>{data?.high_24h.toLocaleString()}</InfoContent>
+              <InfoContent>{infoData?.high_24h.toLocaleString()}</InfoContent>
             </InfoRow>
             <InfoRow>
               <InfoTitle>저가</InfoTitle>
-              <InfoContent>{data?.low_24h.toLocaleString()}</InfoContent>
+              <InfoContent>{infoData?.low_24h.toLocaleString()}</InfoContent>
             </InfoRow>
             <InfoRow>
               <InfoTitle>시가총액</InfoTitle>
-              <InfoContent>{data?.market_cap.toLocaleString()}</InfoContent>
+              <InfoContent>{infoData?.market_cap.toLocaleString()}</InfoContent>
             </InfoRow>
             <InfoRow>
               <InfoTitle>거래대금</InfoTitle>
-              <InfoContent>{data?.total_volume.toLocaleString()}</InfoContent>
+              <InfoContent>{infoData?.total_volume.toLocaleString()}</InfoContent>
             </InfoRow>
           </PriceInfo>
         </MainBox>
-      </Container>
+      </Container>)}
     </>
   );
 }
