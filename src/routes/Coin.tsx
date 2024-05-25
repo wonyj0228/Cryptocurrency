@@ -1,9 +1,11 @@
-import { useParams } from 'react-router-dom';
+import { Outlet, useParams } from 'react-router-dom';
 import Header from '../Components/Header';
 import styled from 'styled-components';
 import { useQuery } from 'react-query';
 import { fetchCoinData } from '../api';
 import { BeatLoader } from 'react-spinners';
+import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
 interface ICurrency {
   usd: number;
@@ -111,15 +113,47 @@ const DescContent = styled.div`
 
   letter-spacing: 1px;
   line-height: 20px;
+  font-size: calc(9px + 0.4vw);
+  a {
+    text-decoration: underline solid 1px ${(props) => props.theme.accentColor};
+  }
 `;
 
+const ChartBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+  margin-top: 30px;
+`;
+const ChartTaps = styled.div`
+  display: flex;
+`;
+const ChartTap = styled.div`
+  text-align: center;
+  width: 25%;
+  a {
+    font-size: calc(9px + 0.4vw);
+    display: block;
+    height: 40px;
+    line-height: 40px;
+    background-color: rgba(80, 80, 80, 0.1);
+    border: ${(props) => props.theme.borderColor};
+    color: ${(props) => props.theme.accentColor};
+    font-weight: bold;
+  }
+`;
+const ChartContent = styled.div``;
+
+////////////////////////////////////////////////////////////////////////////////////////
 function Coin() {
   const { coinId } = useParams<{ coinId: string }>();
+  const [days, setDays] = useState(7);
 
   const { isLoading: infoLoading, data: infoData } = useQuery<ICoin>(
     ['coinInfo', coinId],
     () => fetchCoinData(`${coinId}`)
   );
+
   let isPositive = true;
   let priceChgPer = '';
   const tempPer = infoData?.market_data.price_change_percentage_24h;
@@ -189,6 +223,33 @@ function Coin() {
               </InfoRow>
             </PriceInfo>
           </MainBox>
+          <ChartBox>
+            <ChartTaps>
+              <ChartTap>
+                <Link onClick={() => setDays(7)} to={`/${coinId}/chart`}>
+                  7 days
+                </Link>
+              </ChartTap>
+              <ChartTap>
+                <Link onClick={() => setDays(90)} to={`/${coinId}/chart`}>
+                  30 days
+                </Link>
+              </ChartTap>
+              <ChartTap>
+                <Link onClick={() => setDays(270)} to={`/${coinId}/chart`}>
+                  3 months
+                </Link>
+              </ChartTap>
+              <ChartTap>
+                <Link onClick={() => setDays(365)} to={`/${coinId}/chart`}>
+                  1 year
+                </Link>
+              </ChartTap>
+            </ChartTaps>
+            <ChartContent>
+              <Outlet context={{ coinId, days }} />
+            </ChartContent>
+          </ChartBox>
           <DescBox>
             <DescTitle>Description</DescTitle>
             <DescContent
