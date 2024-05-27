@@ -22,7 +22,7 @@ export function fetchCoinData(coinId: string) {
 
 export function fetchChartData(coinId: string, days: number) {
   return fetch(
-    `${BASE_URL}/coins/${coinId}/market_chart?vs_currency=usd&days=${days}`,
+    `${BASE_URL}/coins/${coinId}/ohlc?vs_currency=usd&days=${days}`,
     options
   ).then((response) => response.json());
 }

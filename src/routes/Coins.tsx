@@ -6,6 +6,7 @@ import coverImage from '../Img/coverImg.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCoins } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
+import { BeatLoader } from 'react-spinners';
 
 interface ICoin {
   id: string;
@@ -166,6 +167,13 @@ const PriceChange = styled.td<{ $isPositive: boolean }>`
     props.$isPositive ? props.theme.redColor : props.theme.blueColor};
 `;
 
+const LoadingContainer = styled.div`
+  height: calc(100vh - 40vh);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 function Coins() {
   const { isLoading, data } = useQuery<ICoin[]>('coinIds', fetchCoins);
@@ -184,7 +192,9 @@ function Coins() {
         </Cover>
 
         {isLoading ? (
-          <div>Loading...</div>
+          <LoadingContainer>
+            <BeatLoader color="#FDDE55" margin={30} size={20} />
+          </LoadingContainer>
         ) : (
           <CoinList>
             <Title>

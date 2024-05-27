@@ -231,12 +231,12 @@ function Coin() {
                 </Link>
               </ChartTap>
               <ChartTap>
-                <Link onClick={() => setDays(90)} to={`/${coinId}/chart`}>
+                <Link onClick={() => setDays(30)} to={`/${coinId}/chart`}>
                   30 days
                 </Link>
               </ChartTap>
               <ChartTap>
-                <Link onClick={() => setDays(270)} to={`/${coinId}/chart`}>
+                <Link onClick={() => setDays(90)} to={`/${coinId}/chart`}>
                   3 months
                 </Link>
               </ChartTap>
