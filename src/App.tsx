@@ -1,8 +1,10 @@
 import { RouterProvider } from 'react-router-dom';
 import Router from './Router';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import { createGlobalStyle } from 'styled-components';
+import { ThemeProvider, createGlobalStyle } from 'styled-components';
 import reset from 'styled-reset';
+import { useState, createContext } from 'react';
+import { darkTheme, lightTheme } from './theme';
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
@@ -20,12 +22,23 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
+export const ThemeContext = createContext({ setTheme: () => {}, theme: '' });
+
 function App() {
+  const [theme, setTheme] = useState('light');
+
+  const changeTheme = () => {
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+  };
   return (
     <>
-      <GlobalStyle />
-      <RouterProvider router={Router()} />
-      <ReactQueryDevtools initialIsOpen={true} />
+      <ThemeContext.Provider value={{ setTheme: changeTheme, theme: theme }}>
+        <ThemeProvider theme={theme === 'light' ? lightTheme : darkTheme}>
+          <GlobalStyle />
+          <RouterProvider router={Router()} />
+          <ReactQueryDevtools initialIsOpen={true} />
+        </ThemeProvider>
+      </ThemeContext.Provider>
     </>
   );
 }

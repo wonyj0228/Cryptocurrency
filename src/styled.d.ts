@@ -10,9 +10,12 @@ declare module 'styled-components' {
     grayColor: string;
 
     borderColor: string;
+    tableHeadTextColor: string;
+    tableBodyBgColor: string;
+    trBorderColor: string;
+    trHoverColor: string;
 
     themeSunColor: string;
     themeMoonColor: string;
-    tableHeadColor: string;
   }
 }

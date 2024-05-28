@@ -4,6 +4,8 @@ import { useOutletContext } from 'react-router-dom';
 import ReactApexCharts from 'react-apexcharts';
 import styled from 'styled-components';
 import { BeatLoader } from 'react-spinners';
+import { useContext } from 'react';
+import { ThemeContext } from '../App';
 
 interface IParams {
   coinId: string;
@@ -19,6 +21,7 @@ const LoadingContainer = styled.div`
 
 const Chart = () => {
   const { coinId, days } = useOutletContext<IParams>();
+  const { theme } = useContext(ThemeContext);
 
   const { isLoading: chartLoading, data: chartData } = useQuery<number[][]>(
     ['chart', coinId, days],
@@ -50,6 +53,16 @@ const Chart = () => {
               labels: {
                 datetimeFormatter: {
                   hour: 'HH:mm',
+                },
+                style: {
+                  colors: theme === 'dark' ? 'white' : 'black',
+                },
+              },
+            },
+            yaxis: {
+              labels: {
+                style: {
+                  colors: theme === 'dark' ? 'white' : 'black',
                 },
               },
             },

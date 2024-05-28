@@ -36,6 +36,7 @@ const Container = styled.div`
   align-items: center;
   padding-top: 50px;
   padding-bottom: 50px;
+  background-color: ${(props) => props.theme.bgColor};
 `;
 
 const MainBox = styled.div`
@@ -45,6 +46,7 @@ const MainBox = styled.div`
 
 const CoinName = styled.div`
   display: flex;
+  color: ${(props) => props.theme.textColor};
   img {
     width: 50px;
   }
@@ -73,6 +75,7 @@ const PriceInfo = styled.div`
   display: flex;
   flex-wrap: wrap;
   font-size: calc(9px + 0.3vw);
+  color: ${(props) => props.theme.textColor};
   div:nth-child(1) {
     color: ${(props) => props.theme.redColor};
   }
@@ -84,7 +87,7 @@ const InfoRow = styled.div`
   padding-right: 20px;
 `;
 const InfoTitle = styled.span`
-  color: ${(props) => props.theme.tableHeadColor};
+  color: ${(props) => props.theme.tableHeadTextColor};
   padding-right: 7px;
 `;
 const InfoContent = styled.span``;
@@ -104,10 +107,12 @@ const DescBox = styled.div`
 const DescTitle = styled.span`
   font-size: 25px;
   font-weight: bold;
+  color: ${(props) => props.theme.textColor};
 `;
 
 const DescContent = styled.div`
   border: ${(props) => props.theme.borderColor};
+  color: ${(props) => props.theme.textColor};
   border-radius: 10px;
   margin-top: 15px;
   padding: 10px 10px;
@@ -116,7 +121,7 @@ const DescContent = styled.div`
   line-height: 20px;
   font-size: calc(9px + 0.4vw);
   a {
-    text-decoration: underline solid 1px ${(props) => props.theme.accentColor};
+    color: ${(props) => props.theme.accentColor};
   }
 `;
 
@@ -133,18 +138,21 @@ const ChartTap = styled.div`
   text-align: center;
   width: 25%;
   a {
-    font-size: calc(9px + 0.4vw);
+    font-size: calc(12px + 0.4vw);
     display: block;
-    height: 40px;
-    line-height: 40px;
-    background-color: rgba(80, 80, 80, 0.1);
+    height: 60px;
+    line-height: 60px;
+    background-color: ${(props) => props.theme.grayColor};
     border: ${(props) => props.theme.borderColor};
     color: ${(props) => props.theme.accentColor};
     font-weight: bold;
   }
 `;
 
-////////////////////////////////////////////////////////////////////////////////////////
+const ChartContent = styled.div`
+  border: ${(props) => props.theme.borderColor};
+`;
+
 function Coin() {
   const { coinId } = useParams<{ coinId: string }>();
   const [days, setDays] = useState(1);
@@ -246,7 +254,9 @@ function Coin() {
                 </Link>
               </ChartTap>
             </ChartTaps>
-            <Outlet context={{ coinId, days }} />
+            <ChartContent>
+              <Outlet context={{ coinId, days }} />
+            </ChartContent>
           </ChartBox>
           <DescBox>
             <DescTitle>Description</DescTitle>

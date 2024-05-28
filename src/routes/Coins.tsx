@@ -39,12 +39,14 @@ interface ICoin {
 
 const Container = styled.div`
   margin: 0 auto;
+  background-color: ${(props) => props.theme.bgColor};
+  padding-bottom: 50px;
 `;
 
 const Cover = styled.div`
   width: 100%;
   height: 25vh;
-  background-color: ${(props) => props.theme.accentColor};
+  background-color: #163e64;
   display: flex;
   justify-content: center;
 `;
@@ -99,13 +101,15 @@ const Title = styled.div`
 const List = styled.div`
   width: 60%;
   border: ${(props) => props.theme.borderColor};
+  background-color: ${(props) => props.theme.tableBodyBgColor};
   border-radius: 10px;
   min-width: 300px;
 
   table {
     width: 100%;
+
     thead {
-      color: ${(props) => props.theme.tableHeadColor};
+      color: ${(props) => props.theme.tableHeadTextColor};
       font-weight: bold;
       font-size: 15px;
       height: 50px;
@@ -116,12 +120,13 @@ const List = styled.div`
     }
     tbody {
       font-size: calc(10px + 0.2vw);
+      color: ${(props) => props.theme.textColor};
       tr {
-        border-bottom: 0.7px solid rgba(80, 80, 80, 0.1);
+        border-bottom: ${(props) => props.theme.trBorderColor};
         transition: background-color 0.3s ease;
         cursor: pointer;
         &:hover {
-          background-color: rgba(80, 80, 80, 0.1);
+          background-color: ${(props) => props.theme.trHoverColor};
         }
       }
       td {
@@ -158,7 +163,7 @@ const CoinInfo = styled.div`
     font-weight: bold;
   }
   div:nth-child(2) {
-    color: ${(props) => props.theme.tableHeadColor};
+    color: ${(props) => props.theme.tableHeadTextColor};
   }
 `;
 
@@ -174,7 +179,6 @@ const LoadingContainer = styled.div`
   align-items: center;
 `;
 
-////////////////////////////////////////////////////////////////////////////////////////////////
 function Coins() {
   const { isLoading, data } = useQuery<ICoin[]>('coinIds', fetchCoins);
   const navigate = useNavigate();

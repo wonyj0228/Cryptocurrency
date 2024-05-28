@@ -1,17 +1,18 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ThemeContext } from '../App';
 
 const Container = styled.div`
   width: 100%;
   padding: 25px 30px;
-
   display: flex;
   justify-content: space-between;
   align-items: center;
   box-sizing: border-box;
+  background-color: ${(props) => props.theme.bgColor};
 `;
 
 const Home = styled.span`
@@ -69,11 +70,13 @@ const Toggle = styled.div`
 `;
 
 const Header = () => {
-  const [isChecked, setIsChecked] = useState(false);
+  const { setTheme, theme } = useContext(ThemeContext);
+  const [isChecked, setIsChecked] = useState(theme === 'dark');
   const navigate = useNavigate();
 
   const changeTheme = () => {
     setIsChecked((prev) => !prev);
+    setTheme();
   };
   return (
     <Container>
