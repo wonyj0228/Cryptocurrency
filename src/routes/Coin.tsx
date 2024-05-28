@@ -35,6 +35,7 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   padding-top: 50px;
+  padding-bottom: 50px;
 `;
 
 const MainBox = styled.div`
@@ -142,12 +143,11 @@ const ChartTap = styled.div`
     font-weight: bold;
   }
 `;
-const ChartContent = styled.div``;
 
 ////////////////////////////////////////////////////////////////////////////////////////
 function Coin() {
   const { coinId } = useParams<{ coinId: string }>();
-  const [days, setDays] = useState(7);
+  const [days, setDays] = useState(1);
 
   const { isLoading: infoLoading, data: infoData } = useQuery<ICoin>(
     ['coinInfo', coinId],
@@ -226,8 +226,8 @@ function Coin() {
           <ChartBox>
             <ChartTaps>
               <ChartTap>
-                <Link onClick={() => setDays(7)} to={`/${coinId}/chart`}>
-                  7 days
+                <Link onClick={() => setDays(1)} to={`/${coinId}/chart`}>
+                  1 day
                 </Link>
               </ChartTap>
               <ChartTap>
@@ -236,8 +236,8 @@ function Coin() {
                 </Link>
               </ChartTap>
               <ChartTap>
-                <Link onClick={() => setDays(90)} to={`/${coinId}/chart`}>
-                  3 months
+                <Link onClick={() => setDays(180)} to={`/${coinId}/chart`}>
+                  6 months
                 </Link>
               </ChartTap>
               <ChartTap>
@@ -246,9 +246,7 @@ function Coin() {
                 </Link>
               </ChartTap>
             </ChartTaps>
-            <ChartContent>
-              <Outlet context={{ coinId, days }} />
-            </ChartContent>
+            <Outlet context={{ coinId, days }} />
           </ChartBox>
           <DescBox>
             <DescTitle>Description</DescTitle>

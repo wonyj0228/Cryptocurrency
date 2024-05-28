@@ -214,7 +214,10 @@ function Coins() {
                 <tbody>
                   {data?.map((coin) => {
                     return (
-                      <tr key={coin.id} onClick={() => navigate(`/${coin.id}`)}>
+                      <tr
+                        key={coin.id}
+                        onClick={() => navigate(`/${coin.id}/chart`)}
+                      >
                         <td>
                           <Coin>
                             <img src={coin.image} alt="coinImg" />
