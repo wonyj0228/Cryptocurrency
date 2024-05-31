@@ -33,6 +33,7 @@ interface ICoin {
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  height: calc(100vh - 80px);
   align-items: center;
   padding-top: 50px;
   padding-bottom: 50px;

@@ -13,20 +13,43 @@ interface IParams {
 }
 
 const LoadingContainer = styled.div`
-  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: ${(props) => props.theme.bgColor};
+`;
+const ErrorContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: ${(props) => props.theme.bgColor};
+  padding: 0 20px;
+
+  div:nth-child(1) {
+    color: ${(props) => props.theme.accentColor};
+    font-size: calc(20px + 0.7vw);
+    height: 150px;
+    padding-top: 70px;
+  }
+
+  div:nth-child(2) {
+    color: ${(props) => props.theme.textColor};
+    height: 70px;
+    padding-top: 20px;
+    font-size: calc(10px + 0.5vw);
+  }
 `;
 
 const Chart = () => {
   const { coinId, days } = useOutletContext<IParams>();
   const { theme } = useContext(ThemeContext);
 
-  const { isLoading: chartLoading, data: chartData } = useQuery<number[][]>(
-    ['chart', coinId, days],
-    () => fetchChartData(`${coinId}`, days)
+  const {
+    isLoading: chartLoading,
+    data: chartData,
+    error: chartError,
+  } = useQuery<number[][]>(['chart', coinId, days], () =>
+    fetchChartData(`${coinId}`, days)
   );
 
   return (
@@ -35,7 +58,7 @@ const Chart = () => {
         <LoadingContainer>
           <BeatLoader color="#FDDE55" margin={30} size={20} />
         </LoadingContainer>
-      ) : (
+      ) : chartError === null ? (
         <ReactApexCharts
           type="candlestick"
           series={[
@@ -69,6 +92,14 @@ const Chart = () => {
             },
           }}
         />
+      ) : (
+        <ErrorContainer>
+          <div>Sorry, we can't seem to find the data you're looking for.</div>
+          <div>
+            CRYPTOCURRENCY는 무료 API 데이터로 서비스 중입니다. 잠시 후 다시
+            시도해주세요.
+          </div>
+        </ErrorContainer>
       )}
     </>
   );
