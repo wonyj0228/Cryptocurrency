@@ -177,10 +177,14 @@ const LoadingContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: ${(props) => props.theme.bgColor};
 `;
 
 function Coins() {
-  const { isLoading, data } = useQuery<ICoin[]>('coinIds', fetchCoins);
+  const { isLoading, data } = useQuery<ICoin[]>('coinIds', fetchCoins, {
+    refetchOnWindowFocus: false,
+    refetchInterval: 600000,
+  });
   const navigate = useNavigate();
 
   return (

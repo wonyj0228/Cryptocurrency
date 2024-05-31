@@ -22,18 +22,18 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-export const ThemeContext = createContext({ setTheme: () => {}, theme: '' });
+export const ThemeContext = createContext({ setTheme: () => {}, theme: false });
 
 function App() {
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState(false);
 
   const changeTheme = () => {
-    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+    setTheme((prev) => !prev);
   };
   return (
     <>
       <ThemeContext.Provider value={{ setTheme: changeTheme, theme: theme }}>
-        <ThemeProvider theme={theme === 'light' ? lightTheme : darkTheme}>
+        <ThemeProvider theme={theme === true ? darkTheme : lightTheme}>
           <GlobalStyle />
           <RouterProvider router={Router()} />
           <ReactQueryDevtools initialIsOpen={true} />

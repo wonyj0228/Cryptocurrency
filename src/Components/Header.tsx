@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ThemeContext } from '../App';
 
@@ -71,18 +71,13 @@ const Toggle = styled.div`
 
 const Header = () => {
   const { setTheme, theme } = useContext(ThemeContext);
-  const [isChecked, setIsChecked] = useState(theme === 'dark');
   const navigate = useNavigate();
 
-  const changeTheme = () => {
-    setIsChecked((prev) => !prev);
-    setTheme();
-  };
   return (
     <Container>
       <Home onClick={() => navigate('/')}>CRYPTOCURRENCY</Home>
-      <Toggle onClick={changeTheme}>
-        <ChkBox checked={isChecked} readOnly={true} />
+      <Toggle onClick={() => setTheme()}>
+        <ChkBox checked={theme} readOnly={true} />
         <MoveBar />
         <FontAwesomeIcon icon={faSun} />
         <FontAwesomeIcon icon={faMoon} />

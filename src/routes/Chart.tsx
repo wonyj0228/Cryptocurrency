@@ -17,6 +17,7 @@ const LoadingContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: ${(props) => props.theme.bgColor};
 `;
 
 const Chart = () => {
@@ -55,14 +56,14 @@ const Chart = () => {
                   hour: 'HH:mm',
                 },
                 style: {
-                  colors: theme === 'dark' ? 'white' : 'black',
+                  colors: theme === true ? 'white' : 'black',
                 },
               },
             },
             yaxis: {
               labels: {
                 style: {
-                  colors: theme === 'dark' ? 'white' : 'black',
+                  colors: theme === false ? 'white' : 'black',
                 },
               },
             },

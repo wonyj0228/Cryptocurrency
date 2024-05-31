@@ -95,6 +95,7 @@ const InfoContent = styled.span``;
 const LoadingContainer = styled.div`
   height: calc(100vh - 80px);
   display: flex;
+  background-color: ${(props) => props.theme.bgColor};
   justify-content: center;
   align-items: center;
 `;
