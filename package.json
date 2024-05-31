@@ -18,6 +18,7 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/styled-components": "^5.1.34",
     "apexcharts": "^3.49.1",
+    "gh-pages": "^6.1.1",
     "http-proxy-middleware": "^3.0.0",
     "react": "^18.3.1",
     "react-apexcharts": "^1.4.1",
@@ -31,11 +32,14 @@
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
+  "homepage": "https://wonyj0228.github.io/Cryptocurrency/",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d public"
   },
   "eslintConfig": {
     "extends": [
