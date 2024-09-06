@@ -15,6 +15,7 @@ const GlobalStyle = createGlobalStyle`
   body{
     font-family: 'Noto Sans',"Noto Sans KR", sans-serif;
     font-size: 16px;
+    background-color: ${(props) => props.theme.bgColor};
   }
   a{
     text-decoration: none;
@@ -33,7 +34,7 @@ function App() {
   return (
     <>
       <ThemeContext.Provider value={{ setTheme: changeTheme, theme: theme }}>
-        <ThemeProvider theme={theme === true ? darkTheme : lightTheme}>
+        <ThemeProvider theme={theme ? darkTheme : lightTheme}>
           <GlobalStyle />
           <RouterProvider router={Router()} />
           <ReactQueryDevtools initialIsOpen={true} />

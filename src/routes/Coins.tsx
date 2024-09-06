@@ -39,7 +39,6 @@ interface ICoin {
 
 const Container = styled.div`
   margin: 0 auto;
-  background-color: ${(props) => props.theme.bgColor};
   padding-bottom: 50px;
 `;
 
@@ -184,6 +183,7 @@ function Coins() {
   const { isLoading, data } = useQuery<ICoin[]>('coinIds', fetchCoins, {
     refetchOnWindowFocus: false,
     refetchInterval: 600000,
+    staleTime: 600000,
   });
   const navigate = useNavigate();
 

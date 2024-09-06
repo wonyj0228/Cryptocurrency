@@ -13,10 +13,11 @@ interface IParams {
 }
 
 const LoadingContainer = styled.div`
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: ${(props) => props.theme.bgColor};
 `;
 const ErrorContainer = styled.div`
   display: flex;
@@ -48,8 +49,14 @@ const Chart = () => {
     isLoading: chartLoading,
     data: chartData,
     error: chartError,
-  } = useQuery<number[][]>(['chart', coinId, days], () =>
-    fetchChartData(`${coinId}`, days)
+  } = useQuery<number[][]>(
+    ['chart', coinId, days],
+    () => fetchChartData(`${coinId}`, days),
+    {
+      refetchOnWindowFocus: false,
+      refetchInterval: 600000,
+      staleTime: 600000,
+    }
   );
 
   return (
@@ -70,7 +77,7 @@ const Chart = () => {
             },
           ]}
           width={`100%`}
-          height={`auto`}
+          height={`100%`}
           options={{
             xaxis: {
               type: 'datetime',
@@ -79,14 +86,14 @@ const Chart = () => {
                   hour: 'HH:mm',
                 },
                 style: {
-                  colors: theme === true ? 'white' : 'black',
+                  colors: theme ? 'white' : 'black',
                 },
               },
             },
             yaxis: {
               labels: {
                 style: {
-                  colors: theme === false ? 'white' : 'black',
+                  colors: theme ? 'white' : 'black',
                 },
               },
             },

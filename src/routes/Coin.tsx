@@ -33,11 +33,9 @@ interface ICoin {
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 80px);
   align-items: center;
   padding-top: 50px;
   padding-bottom: 50px;
-  background-color: ${(props) => props.theme.bgColor};
 `;
 
 const MainBox = styled.div`
@@ -142,8 +140,8 @@ const ChartTap = styled.div`
   a {
     font-size: calc(12px + 0.4vw);
     display: block;
-    height: 60px;
-    line-height: 60px;
+    height: 50px;
+    line-height: 50px;
     background-color: ${(props) => props.theme.grayColor};
     border: ${(props) => props.theme.borderColor};
     color: ${(props) => props.theme.accentColor};
@@ -153,6 +151,7 @@ const ChartTap = styled.div`
 
 const ChartContent = styled.div`
   border: ${(props) => props.theme.borderColor};
+  height: 50vh;
 `;
 
 function Coin() {
@@ -161,7 +160,12 @@ function Coin() {
 
   const { isLoading: infoLoading, data: infoData } = useQuery<ICoin>(
     ['coinInfo', coinId],
-    () => fetchCoinData(`${coinId}`)
+    () => fetchCoinData(`${coinId}`),
+    {
+      refetchOnWindowFocus: false,
+      refetchInterval: 600000,
+      staleTime: 600000,
+    }
   );
 
   let isPositive = true;
@@ -233,6 +237,7 @@ function Coin() {
               </InfoRow>
             </PriceInfo>
           </MainBox>
+
           <ChartBox>
             <ChartTaps>
               <ChartTap>
@@ -260,6 +265,7 @@ function Coin() {
               <Outlet context={{ coinId, days }} />
             </ChartContent>
           </ChartBox>
+
           <DescBox>
             <DescTitle>Description</DescTitle>
             <DescContent
