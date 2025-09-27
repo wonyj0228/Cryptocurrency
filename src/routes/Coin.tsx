@@ -2,32 +2,44 @@ import { Outlet, useParams } from 'react-router-dom';
 import Header from '../Components/Header';
 import styled from 'styled-components';
 import { useQuery } from 'react-query';
-import { fetchCoinData } from '../api';
+import { fetchCoinDetailData, fetchCoins } from '../api';
 import { BeatLoader } from 'react-spinners';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 
-interface ICurrency {
-  usd: number;
-}
-
-interface IMarket {
-  current_price: ICurrency;
-  market_cap: ICurrency;
-  total_volume: ICurrency;
-  high_24h: ICurrency;
-  low_24h: ICurrency;
-  price_change_24h_in_currency: ICurrency;
-  price_change_percentage_24h: number;
-}
-
 interface ICoin {
+  // 기본 식별 정보
   id: string;
-  name: string;
   symbol: string;
-  description: { en: string };
-  image: { small: string };
-  market_data: IMarket;
+  name: string;
+  image: string;
+
+  // 가격 정보
+  current_price: number;
+  price_change_24h: number;
+  price_change_percentage_24h: number;
+  open_24h: number; // 추가: 24시간 전 시가
+  high_24h: number;
+  low_24h: number;
+
+  // 거래량 정보
+  volume_24h: number; // USD 기준 거래량
+  volume_24h_from: number; // 추가: 코인 단위 거래량
+  total_volume_24h: number; // 추가: 총 거래량
+  total_volume_24h_to: number; // 추가: USD 기준 총 거래량
+  total_top_tier_volume_24h: number; // 추가: 상위 거래소 거래량
+  total_top_tier_volume_24h_to: number; // 추가: 상위 거래소 USD 거래량
+
+  // 시장 정보
+  market_cap: number;
+  supply: number; // 추가: 유통 공급량
+
+  // 기술적 정보
+  algorithm: string; // 추가: 알고리즘 (SHA-256, Scrypt 등)
+  proof_type: string; // 추가: 합의 메커니즘 (PoW, PoS 등)
+
+  // 메타데이터
+  last_update: string; // 추가: 마지막 업데이트 시간
 }
 
 const Container = styled.div`
@@ -58,8 +70,7 @@ const CoinName = styled.div`
   }
 `;
 const PriceChange = styled.div<{ $isPositive: boolean }>`
-  color: ${(props) =>
-    props.$isPositive ? props.theme.redColor : props.theme.blueColor};
+  color: ${(props) => (props.$isPositive ? props.theme.redColor : props.theme.blueColor)};
   padding: 10px 0;
 `;
 const CurrentPrice = styled.span`
@@ -160,7 +171,7 @@ function Coin() {
 
   const { isLoading: infoLoading, data: infoData } = useQuery<ICoin>(
     ['coinInfo', coinId],
-    () => fetchCoinData(`${coinId}`),
+    () => fetchCoinDetailData(`${coinId}`),
     {
       refetchOnWindowFocus: false,
       refetchInterval: 600000,
@@ -168,27 +179,19 @@ function Coin() {
     }
   );
 
-  let isPositive = true;
-  let priceChgPer = '';
-  const tempPer = infoData?.market_data.price_change_percentage_24h;
+  // 코인 리스트에서 이미지 정보 가져오기
+  const { data: coinList } = useQuery<ICoin[]>('coinIds', fetchCoins, {
+    staleTime: 600000,
+  });
+  const coinImage = coinList?.find((coin) => coin.id === coinId)?.image || '/default-coin-icon.png';
 
-  if (tempPer) {
-    if (tempPer >= 0) {
-      isPositive = true;
-      priceChgPer = `${tempPer.toFixed(
-        2
-      )}% (▲ ${infoData?.market_data.price_change_24h_in_currency.usd
-        .toFixed(3)
-        .slice(1)})`;
-    } else {
-      isPositive = false;
-      priceChgPer = `${tempPer.toFixed(
-        2
-      )}% (▼ ${infoData?.market_data.price_change_24h_in_currency.usd
-        .toFixed(3)
-        .slice(1)})`;
-    }
-  }
+  // 등락률 계산
+  const isPositive = (infoData?.price_change_percentage_24h || 0) >= 0;
+  const priceChgPer = infoData?.price_change_percentage_24h
+    ? `${infoData.price_change_percentage_24h.toFixed(2)}% (${isPositive ? '▲' : '▼'} ${Math.abs(
+        infoData.price_change_24h
+      ).toFixed(3)})`
+    : '';
 
   return (
     <>
@@ -201,39 +204,31 @@ function Coin() {
         <Container>
           <MainBox>
             <CoinName>
-              <img src={infoData?.image.small} alt="coinImg" />
+              <img src={coinImage} alt="coinImg" />
               <div>{infoData?.name}</div>
             </CoinName>
 
             <PriceChange $isPositive={isPositive}>
-              <CurrentPrice>{`$ ${infoData?.market_data.current_price.usd.toLocaleString()}`}</CurrentPrice>
+              <CurrentPrice>$ {infoData?.current_price?.toLocaleString()}</CurrentPrice>
               <PriceChgPer>{priceChgPer}</PriceChgPer>
             </PriceChange>
 
             <PriceInfo>
               <InfoRow>
                 <InfoTitle>고가</InfoTitle>
-                <InfoContent>
-                  {infoData?.market_data.high_24h.usd.toLocaleString()}
-                </InfoContent>
+                <InfoContent>$ {infoData?.high_24h?.toLocaleString() || 'N/A'}</InfoContent>
               </InfoRow>
               <InfoRow>
                 <InfoTitle>저가</InfoTitle>
-                <InfoContent>
-                  {infoData?.market_data.low_24h.usd.toLocaleString()}
-                </InfoContent>
+                <InfoContent>$ {infoData?.low_24h?.toLocaleString() || 'N/A'}</InfoContent>
               </InfoRow>
               <InfoRow>
                 <InfoTitle>시가총액</InfoTitle>
-                <InfoContent>
-                  {infoData?.market_data.market_cap.usd.toLocaleString()}
-                </InfoContent>
+                <InfoContent>$ {infoData?.market_cap?.toLocaleString() || 'N/A'}</InfoContent>
               </InfoRow>
               <InfoRow>
                 <InfoTitle>거래대금</InfoTitle>
-                <InfoContent>
-                  {infoData?.market_data.total_volume.usd.toLocaleString()}
-                </InfoContent>
+                <InfoContent>$ {infoData?.volume_24h?.toLocaleString() || 'N/A'}</InfoContent>
               </InfoRow>
             </PriceInfo>
           </MainBox>
@@ -267,12 +262,88 @@ function Coin() {
           </ChartBox>
 
           <DescBox>
-            <DescTitle>Description</DescTitle>
-            <DescContent
-              dangerouslySetInnerHTML={{
-                __html: `${infoData?.description.en}`,
-              }}
-            ></DescContent>
+            <DescTitle>상세 정보</DescTitle>
+            <DescContent>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+                {/* 거래량 정보 */}
+                <div>
+                  <h4 style={{ color: '#2196f3', marginBottom: '10px' }}>거래량 정보</h4>
+                  <p>
+                    <strong>24시간 거래량:</strong> {infoData?.volume_24h?.toLocaleString()} USD
+                  </p>
+                  <p>
+                    <strong>24시간 거래량(코인):</strong> {infoData?.volume_24h_from?.toLocaleString()} {coinId}
+                  </p>
+                  <p>
+                    <strong>상위 거래소 거래량:</strong> {infoData?.total_top_tier_volume_24h_to?.toLocaleString()} USD
+                  </p>
+                </div>
+
+                {/* 공급량 정보 */}
+                <div>
+                  <h4 style={{ color: '#2196f3', marginBottom: '10px' }}>공급량 정보</h4>
+                  <p>
+                    <strong>유통 공급량:</strong> {infoData?.supply?.toLocaleString()} {coinId}
+                  </p>
+                  <p>
+                    <strong>시가총액:</strong> ${infoData?.market_cap?.toLocaleString()}
+                  </p>
+                  <p>
+                    <strong>24시간 시가:</strong> ${infoData?.open_24h?.toLocaleString()}
+                  </p>
+                </div>
+
+                {/* 기술적 정보 */}
+                <div>
+                  <h4 style={{ color: '#2196f3', marginBottom: '10px' }}>기술적 정보</h4>
+                  <p>
+                    <strong>알고리즘:</strong> {infoData?.algorithm}
+                  </p>
+                  <p>
+                    <strong>합의 메커니즘:</strong> {infoData?.proof_type}
+                  </p>
+                  <p>
+                    <strong>마지막 업데이트:</strong> {infoData?.last_update}
+                  </p>
+                </div>
+
+                {/* 시장 성과 */}
+                <div>
+                  <h4 style={{ color: '#2196f3', marginBottom: '10px' }}>24시간 성과</h4>
+                  <p>
+                    <strong>시가:</strong> ${infoData?.open_24h?.toLocaleString()}
+                  </p>
+                  <p>
+                    <strong>고가:</strong> ${infoData?.high_24h?.toLocaleString()}
+                  </p>
+                  <p>
+                    <strong>저가:</strong> ${infoData?.low_24h?.toLocaleString()}
+                  </p>
+                  <p>
+                    <strong>현재가:</strong> ${infoData?.current_price?.toLocaleString()}
+                  </p>
+                </div>
+              </div>
+
+              {/* 거래량 vs 시가총액 비율 */}
+              <div
+                style={{
+                  marginTop: '20px',
+                  padding: '15px',
+                  backgroundColor: 'rgba(33, 150, 243, 0.1)',
+                  borderRadius: '8px',
+                }}
+              >
+                <h4 style={{ color: '#2196f3', marginBottom: '10px' }}>시장 활성도</h4>
+                <p>
+                  <strong>거래량/시가총액 비율:</strong>{' '}
+                  {infoData?.market_cap && infoData?.volume_24h
+                    ? ((infoData.volume_24h / infoData.market_cap) * 100).toFixed(2) + '%'
+                    : 'N/A'}
+                </p>
+                <p style={{ fontSize: '14px', color: '#666' }}>* 높은 비율일수록 활발한 거래를 의미합니다</p>
+              </div>
+            </DescContent>
           </DescBox>
         </Container>
       )}

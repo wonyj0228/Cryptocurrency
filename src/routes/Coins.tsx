@@ -9,32 +9,13 @@ import { useNavigate } from 'react-router-dom';
 import { BeatLoader } from 'react-spinners';
 
 interface ICoin {
-  id: string;
-  symbol: string;
-  name: string;
-  image: string;
-  current_price: number;
-  market_cap: number;
-  market_cap_rank: number;
-  fully_diluted_valuation: number;
-  total_volume: number;
-  high_24h: number;
-  low_24h: number;
-  price_change_24h: number;
-  price_change_percentage_24h: number;
-  market_cap_change_24h: number;
-  market_cap_change_percentage_24h: number;
-  circulating_supply: number;
-  total_supply: number;
-  max_supply: number;
-  ath: number;
-  ath_change_percentage: number;
-  ath_date: string;
-  atl: number;
-  atl_change_percentage: number;
-  atl_date: string;
-  roi: object;
-  last_updated: string;
+  id: string; // symbol과 동일한 값 (BTC, ETH, BNB) - 라우팅/API 호출용
+  symbol: string; // BTC, ETH, BNB
+  name: string; // Bitcoin, Ethereum, Binance Coin
+  image: string; // 코인 이미지 URL
+  current_price: number; // 현재가
+  price_change_24h: number; // 등락가 (24시간)
+  price_change_percentage_24h: number; // 등락률 (24시간)
 }
 
 const Container = styled.div`
@@ -167,8 +148,7 @@ const CoinInfo = styled.div`
 `;
 
 const PriceChange = styled.td<{ $isPositive: boolean }>`
-  color: ${(props) =>
-    props.$isPositive ? props.theme.redColor : props.theme.blueColor};
+  color: ${(props) => (props.$isPositive ? props.theme.redColor : props.theme.blueColor)};
 `;
 
 const LoadingContainer = styled.div`
@@ -222,10 +202,7 @@ function Coins() {
                 <tbody>
                   {data?.map((coin) => {
                     return (
-                      <tr
-                        key={coin.id}
-                        onClick={() => navigate(`/${coin.id}/chart`)}
-                      >
+                      <tr key={coin.id} onClick={() => navigate(`/${coin.id}/chart`)}>
                         <td>
                           <Coin>
                             <img src={coin.image} alt="coinImg" />
@@ -237,16 +214,10 @@ function Coins() {
                         </td>
                         <td>$ {coin.current_price.toLocaleString()}</td>
                         <PriceChange $isPositive={coin.price_change_24h > 0}>
-                          ${' '}
-                          {Number(coin.price_change_24h)
-                            .toFixed(3)
-                            .toLocaleString()}
+                          $ {Number(coin.price_change_24h).toFixed(3).toLocaleString()}
                         </PriceChange>
-                        <PriceChange
-                          $isPositive={coin.price_change_percentage_24h > 0}
-                        >
-                          {Number(coin.price_change_percentage_24h).toFixed(2)}{' '}
-                          %
+                        <PriceChange $isPositive={coin.price_change_percentage_24h > 0}>
+                          {Number(coin.price_change_percentage_24h).toFixed(2)} %
                         </PriceChange>
                       </tr>
                     );
