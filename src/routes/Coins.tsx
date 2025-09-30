@@ -1,5 +1,5 @@
-import { useQuery } from 'react-query';
-import { fetchCoins } from '../api';
+import { useQuery, useQueryClient } from 'react-query';
+import { fetchCoinDetailData, fetchCoins } from '../api';
 import styled from 'styled-components';
 import Header from '../Components/Header';
 import coverImage from '../Img/coverImg.png';
@@ -162,10 +162,32 @@ const LoadingContainer = styled.div`
 function Coins() {
   const { isLoading, data } = useQuery<ICoin[]>('coinIds', fetchCoins, {
     refetchOnWindowFocus: false,
-    refetchInterval: 600000,
-    staleTime: 600000,
+    refetchInterval: 600000, // 10분마다 자동 refetch
+    staleTime: 300000, // 5분간 fresh 상태 유지
+    cacheTime: 900000, // 15분간 캐시 유지
+    retry: 3, // 실패시 3번 재시도
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // exponential backoff
+    onSuccess: (data) => {
+      console.log('데이터 fetch 성공:', data.length, '개의 코인');
+    },
+    onError: (error) => {
+      console.error('데이터 fetch 실패:', error);
+    },
   });
+
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const prefetchCoinDetail = (coinId: string) => {
+    queryClient.prefetchQuery(
+      ['coinDetail', coinId], // 쿼리 키
+      () => fetchCoinDetailData(coinId), // 실제 API 함수 사용
+      {
+        staleTime: 300000, // 5분간 fresh
+        cacheTime: 600000, // 10분간 캐시 유지
+      }
+    );
+  };
 
   return (
     <>
@@ -202,7 +224,11 @@ function Coins() {
                 <tbody>
                   {data?.map((coin) => {
                     return (
-                      <tr key={coin.id} onClick={() => navigate(`/${coin.id}/chart`)}>
+                      <tr
+                        key={coin.id}
+                        onClick={() => navigate(`/${coin.id}/chart`)}
+                        onMouseOver={() => prefetchCoinDetail(coin.id)}
+                      >
                         <td>
                           <Coin>
                             <img src={coin.image} alt="coinImg" />
