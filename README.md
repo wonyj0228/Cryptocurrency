@@ -28,6 +28,7 @@ https://cryptocurrency-j.web.app/ <-- 프로젝트 링크!
   <img src="https://img.shields.io/badge/Reactquery-FF4154?style=flat-square&logo=reactquery&logoColor=white"/>
   <img src="https://img.shields.io/badge/StyledComponents-DB7093?style=flat-square&logo=styledcomponents&logoColor=white"/>
 - SCM : <img src="https://img.shields.io/badge/Github-181717?style=flat-square&logo=github&logoColor=white"/>
+- Deploy : <img src="https://img.shields.io/badge/Firebase-DD2C00?style=flat-square&logo=firebase&logoColor=white"/>
 
 ## 🎯 구현 내용
 
