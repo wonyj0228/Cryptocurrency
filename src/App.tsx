@@ -26,7 +26,7 @@ const GlobalStyle = createGlobalStyle`
 export const ThemeContext = createContext({ setTheme: () => {}, theme: false });
 
 function App() {
-  const [theme, setTheme] = useState(false);
+  const [theme, setTheme] = useState(true);
 
   const changeTheme = () => {
     setTheme((prev) => !prev);
